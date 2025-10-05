@@ -1,0 +1,86 @@
+# ─── SO / EDITORES ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+# ─── PHP / COMPOSER ───────────────────────────────────────────────────────────
+# Dependencias locales: NO subir vendor (se reconstruye con composer install)
+vendor/
+composer.phar
+
+# Cachés comunes (ajusta rutas según tu estructura)
+cache/
+tmp/
+storage/
+storage/cache/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# Logs
+*.log
+logs/
+storage/logs/
+
+# PHPUnit / Cobertura
+.phpunit.result.cache
+coverage/
+clover.xml
+
+# ─── CONFIGURACIÓN / SECRETOS ─────────────────────────────────────────────────
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.testing
+
+# Si guardas credenciales en INI/JSON/YAML (mejor no hacerlo):
+*.local.php
+*.secret.php
+config/*.local.php
+config/*.local.json
+config/*.local.yaml
+config/*.yml.local
+
+# ─── WEB ROOT (si tienes carpeta pública) ─────────────────────────────────────
+# Sube solo código; ignora archivos subidos por usuarios.
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Si generas assets compilados, puedes ignorarlos (o subirlos si tu deploy los necesita)
+public/build/
+public/dist/
+public/assets/*.map
+
+# ─── NODE / BUILD (por si compilas CSS/JS) ────────────────────────────────────
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+.parcel-cache/
+.vite/
+dist/
+build/
+
+# ─── DOCKER / VAGRANT / CI ───────────────────────────────────────────────────
+.docker/
+docker-compose.override.yml
+.vagrant/
+
+# ─── OTROS ────────────────────────────────────────────────────────────────────
+# Archivos temporales
+*.tmp
+*.cache
+
+# Si generas clases/autoloads en runtime:
+bootstrap/cache/
+
+# Si usas phpcs/php-cs-fixer
+.php_cs
+.php_cs.cache
+.php-cs-fixer.cache

@@ -1,0 +1,11 @@
+﻿Una vez realizado las configuraciones.
+Paso N° 01: Registrar Monedas.
+	Es muy importante tener al menos una moneda para que funcione bien el modulo configuración.
+Paso N° 02: Crear Cajas.
+	Es muy importante tener al menos una caja para que funcione los usuarios.
+Paso N° 03: Registrar Clientes.
+	Es muy importante tener al menos un cliente para que funciones el modulo de salidas(ventas).
+Paso N° 04: Registrar Medidas.
+Paso N° 05 Registrar Categorias
+	Es muy importante tener una medida y categoria para que funicione le importación de productos de excel
+	para no tener problema con las relaciones.
