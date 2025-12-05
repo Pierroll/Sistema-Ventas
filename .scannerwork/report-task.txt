@@ -1,0 +1,6 @@
+projectKey=php-mvc-local
+serverUrl=http://localhost:9000
+serverVersion=25.9.0.112764
+dashboardUrl=http://localhost:9000/dashboard?id=php-mvc-local
+ceTaskId=06ef086a-0864-4b20-9e4b-601e5207ca6d
+ceTaskUrl=http://localhost:9000/api/ce/task?id=06ef086a-0864-4b20-9e4b-601e5207ca6d

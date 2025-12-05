@@ -1236,12 +1236,8 @@ if (!class_exists('QRcode', false)) {
 			$bestMask = array();
 			$checked_masks = array(0, 1, 2, 3, 4, 5, 6, 7);
 			if (QR_FIND_FROM_RANDOM !== false) {
-				$howManuOut = 8 - (QR_FIND_FROM_RANDOM % 9);
-				for ($i = 0; $i <  $howManuOut; ++$i) {
-					$remPos = rand (0, count($checked_masks)-1);
-					unset($checked_masks[$remPos]);
-					$checked_masks = array_values($checked_masks);
-				}
+				     // Selección determinista del primer N subconjunto (sin RNG)
+				     $checked_masks = array_slice($checked_masks, 0, (int) QR_FIND_FROM_RANDOM);
 			}
 			$bestMask = $frame;
 			foreach ($checked_masks as $i) {

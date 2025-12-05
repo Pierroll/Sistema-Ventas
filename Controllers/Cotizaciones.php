@@ -7,16 +7,9 @@ class Cotizaciones extends Controller
     private $id_usuario;
     public function __construct()
     {
-        session_start();
+        parent::__construct();
         if (empty($_SESSION['activo'])) {
             header("location: " . BASE_URL);
-        }
-        parent::__construct();
-        $this->id_usuario = $_SESSION['id_usuario'];
-        $perm = $this->model->verificarPermisos($this->id_usuario, "cotizaciones");
-        if (empty($perm) && $this->id_usuario != 1) {
-            header('Location: ' . BASE_URL . 'administracion/permisos');
-            exit;
         }
     }
     public function index()

@@ -151,11 +151,16 @@ function eliminarRegistro(url, table) {
             http.open("GET", url, true);
             http.send();
             http.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    const res = JSON.parse(this.responseText);
-                    alertas(res.msg, res.icono);
-                    if (res.icono == "success") {
-                        table.ajax.reload();
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        const res = JSON.parse(this.responseText);
+                        alertas(res.msg, res.icono);
+                        if (res.icono == "success") {
+                            table.ajax.reload();
+                        }
+                    } else {
+                        alertas('Error del servidor: ' + this.status, 'error');
+                        console.error('Respuesta del servidor:', this.responseText);
                     }
                 }
             };

@@ -1,17 +1,77 @@
 <?php
-
-class Productos extends Controller{
-    public function __construct() {
+class Productos extends Controller
+{
+    public function __construct()
+    {
         session_start();
         if (empty($_SESSION['activo'])) {
-            header("location: " . BASE_URL);
+            http_response_code(401);
+            echo json_encode(array('success' => false, 'msg' => 'No autenticado'));
+            die();
         }
         parent::__construct();
     }
+
+    // ============ MÉTODOS PARA TESTSPRITE ============
+
+    /**
+     * GET /productos - Listar todos los productos activos
+     */
     public function index()
     {
-        $data['medidas'] = $this->model->getMedidas();
-        $data['categorias'] = $this->model->getCategorias();
+        try {
+            $data = $this->model->getProductos(1);
+            http_response_code(200);
+            echo json_encode(array(
+                'success' => true,
+                'data' => $data,
+                'count' => count($data)
+            ), JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(array('success' => false, 'msg' => 'Error al obtener productos'));
+        }
+        die();
+    }
+
+    /**
+     * GET /productos/detalle - Obtener detalle de un producto
+     */
+    public function detalle()
+    {
+        try {
+            $id_producto = $_GET['id'] ?? null;
+
+            if (empty($id_producto)) {
+                http_response_code(400);
+                echo json_encode(array('success' => false, 'msg' => 'ID producto requerido'));
+                die();
+            }
+
+            $producto = $this->model->getProductos($id_producto);
+
+            if (empty($producto)) {
+                http_response_code(404);
+                echo json_encode(array('success' => false, 'msg' => 'Producto no encontrado'));
+                die();
+            }
+
+            http_response_code(200);
+            echo json_encode(array(
+                'success' => true,
+                'data' => $producto
+            ), JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(array('success' => false, 'msg' => $e->getMessage()));
+        }
+        die();
+    }
+
+    // ============ MÉTODOS EXISTENTES (PARA NAVEGADOR) ============
+
+    public function admin()
+    {
         $id_user = $_SESSION['id_usuario'];
         $data['permisos'] = $this->model->verificarPermisos($id_user, "crear_producto");
         if (!empty($data['permisos']) || $id_user == 1) {
@@ -19,9 +79,12 @@ class Productos extends Controller{
         } else {
             $data['existe'] = false;
         }
+        $data['medidas'] = $this->model->getMedidas();
+        $data['categorias'] = $this->model->getCategorias();
         $data['modal'] = 'producto';
         $this->views->getView('productos',  "index", $data);
     }
+
     public function listar()
     {
         $id_user = $_SESSION['id_usuario'];
@@ -46,6 +109,7 @@ class Productos extends Controller{
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         die();
     }
+
     public function registrar()
     {
         if (isset($_POST['codigo']) && isset($_POST['descripcion']) && isset($_POST['precio_compra'])) {
@@ -58,7 +122,7 @@ class Productos extends Controller{
             $id = strClean($_POST['id']);
             $img = $_FILES['imagen'];
             $name = $img['name'];
-            $tmpname = $img['tmp_name'];        
+            $tmpname = $img['tmp_name'];
             $fecha = date("YmdHis");
             if (empty($codigo) || empty($nombre) || empty($precio_compra) || empty($precio_venta)
             || empty($categoria) || empty($medida)) {
@@ -79,7 +143,6 @@ class Productos extends Controller{
                                 if (!empty($name)) {
                                     $extension = pathinfo($name, PATHINFO_EXTENSION);
                                     $formatos_permitidos =  array('png', 'jpeg', 'jpg');
-                                    $extension = pathinfo($name, PATHINFO_EXTENSION);
                                     if (!in_array($extension, $formatos_permitidos)) {
                                         $msg = array('msg' => 'Archivo no permitido', 'icono' => 'warning');
                                     } else {
@@ -94,7 +157,7 @@ class Productos extends Controller{
                                 if ($id == "") {
                                         $data = $this->model->registrarProducto($codigo, $nombre, $precio_compra, $precio_venta, $medida, $categoria, $imgNombre);
                                         if ($data == 0) {
-                                            $msg = array('msg' => 'El producto ya existe', 'icono' => 'warning');                          
+                                            $msg = array('msg' => 'El producto ya existe', 'icono' => 'warning');
                                         } else if ($data > 0) {
                                             if (!empty($name)) {
                                                 move_uploaded_file($tmpname, $destino);
@@ -129,17 +192,19 @@ class Productos extends Controller{
             }
         }else{
             $msg = array('msg' => 'error fatal', 'icono' => 'error');
-        }        
+        }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function editar(int $id)
+
+    public function editar($id)
     {
         $data = $this->model->editarPro($id);
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function eliminar(int $id)
+
+    public function eliminar($id)
     {
         $data = $this->model->accionPro(0, $id);
         if ($data == 1) {
@@ -150,7 +215,8 @@ class Productos extends Controller{
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function reingresar(int $id)
+
+    public function reingresar($id)
     {
         $data = $this->model->accionPro(1, $id);
         if ($data == 1) {
@@ -161,6 +227,7 @@ class Productos extends Controller{
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
     }
+
     public function inventario()
     {
         $id_user = $_SESSION['id_usuario'];
@@ -179,6 +246,7 @@ class Productos extends Controller{
         $data['modal'] = 'inventario';
         $this->views->getView('productos',  "inventario", $data);
     }
+
     public function registrarInventario()
     {
         $id_user = $_SESSION['id_usuario'];
@@ -214,203 +282,14 @@ class Productos extends Controller{
             die();
         }
     }
+
     public function listarInventario()
     {
         $data = $this->model->getInventarios();
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function pdfInventario($accion)
-    {
-        $id_user = $_SESSION['id_usuario'];
-        $perm = $this->model->verificarPermisos($id_user, "reporte_pdf_inventario");
-        if (!empty($perm) || $id_user == 1) {
-            $empresa = $this->model->getEmpresa();
-            if ($accion == 'all') {
-                $productos = $this->model->getInventarios();
-            } else {
-                $array = explode(',', $accion);
-                $desde = $array[0];
-                $hasta = $array[1];
-                $productos = $this->model->filtroInventarios($desde, $hasta);
-            }
-            if (empty($productos)) {
-                echo 'No hay registro';
-            } else {
-                require('Libraries/fpdf/fpdf.php');
-                include('Libraries/phpqrcode/qrlib.php');
-                $pdf = new FPDF('P', 'mm', 'A4');
-                $pdf->AddPage();
-                $pdf->SetMargins(10, 0, 0);
-                $pdf->SetTitle('Reporte Inventario');
-                $pdf->SetFont('Arial', '', 14);
-                $pdf->Cell(195, 8, utf8_decode($empresa['nombre']), 0, 1, 'C');
-                QRcode::png($empresa['ruc'], 'assets/qr.png');
-                $pdf->Image('assets/qr.png', 95, 18, 25, 25);
-                $pdf->Image('assets/img/logo.png', 170, 10, 25, 25);
-                $pdf->SetFont('Arial', '', 9);
-                $pdf->Cell(18, 5, 'Ruc: ', 0, 0, 'L');
-                $pdf->Cell(20, 5, $empresa['ruc'], 0, 1, 'L');
-                $pdf->Cell(18, 5, utf8_decode('Teléfono: '), 0, 0, 'L');
-                $pdf->Cell(20, 5, $empresa['telefono'], 0, 1, 'L');
-                $pdf->Cell(18, 5, utf8_decode('Dirección: '), 0, 0, 'L');
-                $pdf->Cell(20, 5, utf8_decode($empresa['direccion']), 0, 1, 'L');
-                $pdf->Ln(10);
-                //Encabezado de productos
-                $pdf->SetFillColor(0, 0, 0);
-                $pdf->SetTextColor(255, 255, 255);
-                $pdf->Cell(190, 5, 'Detalle de Productos', 1, 1, 'C', true);
-                $pdf->SetFont('Arial', '', 8);
-                $pdf->SetFillColor(0, 100, 50);
-                $pdf->SetTextColor(255, 255, 255);
-				$pdf->Cell(15, 5, utf8_decode('N°'), 1, 0, 'L', true);
-                $pdf->Cell(100, 5, utf8_decode('Descripción'), 1, 0, 'L', true);
-                $pdf->Cell(25, 5, 'Fecha', 1, 0, 'L', true);
-                $pdf->Cell(25, 5, 'Entradas.', 1, 0, 'L', true);
-                $pdf->Cell(25, 5, 'Salidas', 1, 1, 'L', true);
-                $pdf->SetTextColor(0, 0, 0);
-				$i = 1;
-                foreach ($productos as $row) {
-                    $pdf->Cell(15, 5, $i, 1, 0, 'L');
-					$pdf->Cell(100, 5, utf8_decode($row['descripcion']), 1, 0, 'L');
-                    $pdf->Cell(25, 5, $row['fecha'], 1, 0, 'L');
-                    $pdf->Cell(25, 5, $row['total_entradas'], 1, 0, 'R');
-                    $pdf->Cell(25, 5, $row['total_salidas'], 1, 1, 'R');
-					$i++;
-                }
-                $pdf->Output();
-            }
-        } else {
-            header('Location: Administracion/permisos'); 
-        }
-    }
-    public function pdfCompra($accion)
-    {
-        $id_user = $_SESSION['id_usuario'];
-        $perm = $this->model->verificarPermisos($id_user, "Reporte_pdf_compras");
-        if (!empty($perm) || $id_user == 1) {
-            $empresa = $this->model->getEmpresa();
-            if ($accion == 'all') {
-                $productos = $this->model->getCompras();
-            } else {
-                $array = explode(',', $accion);
-                $desde = $array[0];
-                $hasta = $array[1];
-                $productos = $this->model->filtroCompras($desde, $hasta);
-            }
-            if (empty($productos)) {
-                echo 'No hay registro';
-            } else {
-                require('Libraries/fpdf/fpdf.php');
-                include('Libraries/phpqrcode/qrlib.php');
-                $pdf = new FPDF('P', 'mm', 'A4');
-                $pdf->AddPage();
-                $pdf->SetMargins(5, 0, 0);
-                $pdf->SetTitle('Reporte Compras');
-                $pdf->SetFont('Arial', '', 14);
-                $pdf->Cell(195, 8, utf8_decode($empresa['nombre']), 0, 1, 'C');
-                QRcode::png($empresa['ruc'], 'assets/qr.png');
-                $pdf->Image('assets/qr.png', 95, 18, 25, 25);
-                $pdf->Image('assets/img/logo.png', 170, 10, 25, 25);
-                $pdf->SetFont('Arial', '', 9);
 
-                $pdf->Cell(18, 5, 'Ruc: ', 0, 0, 'L');
-                $pdf->Cell(20, 5, $empresa['ruc'], 0, 1, 'L');
-                $pdf->Cell(18, 5, utf8_decode('Teléfono: '), 0, 0, 'L');
-                $pdf->Cell(20, 5, $empresa['telefono'], 0, 1, 'L');
-                $pdf->Cell(18, 5, utf8_decode('Dirección: '), 0, 0, 'L');
-                $pdf->Cell(20, 5, utf8_decode($empresa['direccion']), 0, 1, 'L');
-                $pdf->Ln(10);
-                //Encabezado de productos
-                $pdf->SetFillColor(0, 0, 0);
-                $pdf->SetTextColor(255, 255, 255);
-                $pdf->Cell(195, 5, 'Detalle de Compras', 1, 1, 'C', true);
-                $pdf->SetFont('Arial', '', 9);
-                $pdf->SetFillColor(0, 100, 50);
-                $pdf->SetTextColor(255, 255, 255);
-                $pdf->Cell(20, 5, utf8_decode('N°'), 1, 0, 'L', true);
-                $pdf->Cell(50, 5, 'Total', 1, 0, 'L', true);
-                $pdf->Cell(40, 5, 'Fecha', 1, 0, 'L', true);
-                $pdf->Cell(35, 5, 'Hora', 1, 0, 'L', true);
-                $pdf->Cell(50, 5, 'Usuario', 1, 1, 'L', true);
-                $pdf->SetTextColor(0, 0, 0);
-                foreach ($productos as $row) {
-                    $pdf->Cell(20, 5, $row['id'], 1, 0, 'L');
-                    $pdf->Cell(50, 5, $row['total'], 1, 0, 'L');
-                    $pdf->Cell(40, 5, $row['fecha'], 1, 0, 'L');
-                    $pdf->Cell(35, 5, $row['hora'], 1, 0, 'L');
-                    $pdf->Cell(50, 5, utf8_decode($row['nombre']), 1, 1, 'L');
-                }
-                $pdf->Output();
-            }
-        } else {
-            header('Location: Administracion/permisos');
-        }
-    }
-    public function pdfVenta($accion)
-    {
-        $id_user = $_SESSION['id_usuario'];
-        $perm = $this->model->verificarPermisos($id_user, "Reporte_pdf_ventas");
-        if (!empty($perm) || $id_user == 1) {
-            $empresa = $this->model->getEmpresa();
-            if ($accion == 'all') {
-                $productos = $this->model->getVentas();
-            } else {
-                $array = explode(',', $accion);
-                $desde = $array[0];
-                $hasta = $array[1];
-                $productos = $this->model->filtroVentas($desde, $hasta);
-            }
-            if (empty($productos)) {
-                echo 'No hay registro';
-            } else {
-                require('Libraries/fpdf/fpdf.php');
-                include('Libraries/phpqrcode/qrlib.php');
-                $pdf = new FPDF('P', 'mm', 'A4');
-                $pdf->AddPage();
-                $pdf->SetMargins(5, 0, 0);
-                $pdf->SetTitle('Reporte Ventas');
-                $pdf->SetFont('Arial', '', 14);
-                $pdf->Cell(195, 8, utf8_decode($empresa['nombre']), 0, 1, 'C');
-                QRcode::png($empresa['ruc'], 'assets/qr.png');
-                $pdf->Image('assets/qr.png', 95, 18, 25, 25);
-                $pdf->Image('assets/img/logo.png', 170, 10, 25, 25);
-                $pdf->SetFont('Arial', '', 9);
-                $pdf->Cell(18, 5, 'Ruc: ', 0, 0, 'L');
-                $pdf->Cell(20, 5, $empresa['ruc'], 0, 1, 'L');
-                $pdf->Cell(18, 5, utf8_decode('Teléfono: '), 0, 0, 'L');
-                $pdf->Cell(20, 5, $empresa['telefono'], 0, 1, 'L');
-                $pdf->Cell(18, 5, utf8_decode('Dirección: '), 0, 0, 'L');
-                $pdf->Cell(20, 5, utf8_decode($empresa['direccion']), 0, 1, 'L');
-                $pdf->Ln(10);
-                //Encabezado de productos
-                $pdf->SetFillColor(0, 0, 0);
-                $pdf->SetTextColor(255, 255, 255);
-                $pdf->Cell(195, 5, 'Detalle de Ventas', 1, 1, 'C', true);
-                $pdf->SetFont('Arial', '', 9);
-                $pdf->SetFillColor(0, 100, 50);
-                $pdf->SetTextColor(255, 255, 255);
-                $pdf->Cell(12, 5, utf8_decode('N°'), 1, 0, 'L', true);
-                $pdf->Cell(53, 5, 'Cliente', 1, 0, 'L', true);
-                $pdf->Cell(30, 5, 'Total', 1, 0, 'L', true);
-                $pdf->Cell(25, 5, 'Fecha', 1, 0, 'L', true);
-                $pdf->Cell(25, 5, 'Hora', 1, 0, 'L', true);
-                $pdf->Cell(50, 5, 'Usuario', 1, 1, 'L', true);
-                $pdf->SetTextColor(0, 0, 0);
-                foreach ($productos as $row) {
-                    $pdf->Cell(12, 5, $row['id'], 1, 0, 'L');
-                    $pdf->Cell(53, 5, utf8_decode($row['cliente']), 1, 0, 'L');
-                    $pdf->Cell(30, 5, $row['total'], 1, 0, 'L');
-                    $pdf->Cell(25, 5, $row['fecha'], 1, 0, 'L');
-                    $pdf->Cell(25, 5, $row['hora'], 1, 0, 'L');
-                    $pdf->Cell(50, 5, utf8_decode($row['nombre']), 1, 1, 'L');
-                }
-                $pdf->Output();
-            }
-        } else {
-            header('Location: Administracion/permisos');
-        }
-    }
     public function inactivos()
     {
         $id_user = $_SESSION['id_usuario'];

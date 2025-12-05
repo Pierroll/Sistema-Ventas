@@ -1,0 +1,10 @@
+.git
+.gitignore
+.scannerwork/
+build/
+reports/
+testall/
+tests/
+testsprite_tests/
+composer.lock
+load_test.sh

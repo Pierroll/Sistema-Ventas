@@ -1,0 +1,26 @@
+{
+  "name": "ventas-sistema-tests",
+  "version": "1.0.0",
+  "description": "Suite de pruebas E2E para Sistema de Ventas con Playwright",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:auth": "playwright test e2e/auth",
+    "test:critical": "playwright test e2e/auth/FUNC-AUTH-01.spec.js e2e/auth/FUNC-AUTH-03.spec.js",
+    "report": "playwright show-report playwright-report"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "testing",
+    "ventas"
+  ],
+  "author": "Equipo de Pruebas",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "axios": "^1.13.2"
+  }
+}

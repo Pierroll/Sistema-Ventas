@@ -45,7 +45,7 @@
                                         <input type="hidden" value="<?php echo $data; ?>" name="token">
                                         <input class="form-control py-4" id="confirmar" name="confirmar" type="password" placeholder="Confirmar Contraseña" />
                                     </div>
-                                    <div class="alert alert-danger text-center d-none" id="alerta" role="alert">
+                                    <div class="alert alert-danger text-center d-none" id="alerta-reset" role="alert">
                                     </div>
                                     <div class="d-grid gap-2">
                                         <button class="btn btn-primary" type="submit" id="accion">Restablecer</button>

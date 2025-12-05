@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "post login authentication",
+    "description": "Test the user login API to verify that authentication works correctly with valid and invalid credentials, and that sessions are properly created."
+  },
+  {
+    "id": "TC002",
+    "title": "post logout session termination",
+    "description": "Test the logout API to ensure that user sessions are properly terminated and access is revoked after logout."
+  },
+  {
+    "id": "TC003",
+    "title": "post ventas agregarventa create sale",
+    "description": "Verify that the API for adding a new sale correctly processes product selection, quantity, customer data, and updates inventory stock accordingly."
+  },
+  {
+    "id": "TC004",
+    "title": "post ventas cantidadventa update sale quantity",
+    "description": "Test the API endpoint that updates the quantity of products in a sale to ensure stock availability is checked and inventory is updated correctly."
+  },
+  {
+    "id": "TC005",
+    "title": "delete ventas deleteventa cancel sale",
+    "description": "Verify that the sale cancellation API properly restores stock, updates sale status, and prevents further processing of the cancelled sale."
+  },
+  {
+    "id": "TC006",
+    "title": "post ventas registrarventa finalize sale",
+    "description": "Test the sale registration API to ensure that sales are finalized only if the cash register is open, stock is available, and that receipts and invoices are generated correctly."
+  },
+  {
+    "id": "TC007",
+    "title": "get ventas historial retrieve sales history",
+    "description": "Verify that the sales history API returns accurate and complete sales records filtered by date, customer, and other parameters."
+  },
+  {
+    "id": "TC008",
+    "title": "get ventas generarpdf generate sales document",
+    "description": "Test the API that generates PDF documents for sales, ensuring that invoices and receipts include correct data and QR codes."
+  },
+  {
+    "id": "TC009",
+    "title": "post ventas anularventa void sale",
+    "description": "Verify that the API to void a sale properly updates inventory, sale status, and prevents further transactions on the voided sale."
+  },
+  {
+    "id": "TC010",
+    "title": "get productos list products",
+    "description": "Test the product listing API to ensure it returns the complete catalog with correct stock levels, categories, and units of measure."
+  }
+]

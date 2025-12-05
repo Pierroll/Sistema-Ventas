@@ -33,10 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
-        dom,
-        buttons,
-        resonsieve: true,
-        bDestroy: true,
+        destroy: true,
         iDisplayLength: 10,
         order: [
             [0, "desc"]

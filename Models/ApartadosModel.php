@@ -1,4 +1,5 @@
 <?php
+
 class ApartadosModel extends Query
 {
     public function __construct()

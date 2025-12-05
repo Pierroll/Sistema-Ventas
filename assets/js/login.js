@@ -31,10 +31,10 @@ function frmLogin(e) {
             document.getElementById('btnAccion').textContent = 'Login';
         });
         http.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState == 4) {
 
                 const res = JSON.parse(this.responseText);
-                if (res == "ok") {
+                if (res.success) {
                     let timerInterval;
                     Swal.fire({
                         title: "Bienvenido al Sistema",
@@ -64,7 +64,7 @@ function frmLogin(e) {
                 } else {
                     document.getElementById('btnAccion').textContent = 'Login';
                     document.getElementById("alerta").classList.remove("d-none");
-                    document.getElementById("alerta").innerHTML = res;
+                    document.getElementById("alerta").innerHTML = res.msg;
                 }
             }
         }
@@ -114,11 +114,11 @@ function frmRestablecer(e) {
     const clave = document.getElementById('clave_nueva').value;
     const confirmar = document.getElementById('confirmar').value;
     if (clave == '' || confirmar == '') {
-        document.getElementById("alerta").classList.remove("d-none");
-        document.getElementById("alerta").textContent = 'Todo los campos son requeridos';
+        document.getElementById("alerta-reset").classList.remove("d-none");
+        document.getElementById("alerta-reset").textContent = 'Todo los campos son requeridos';
     } else if (clave != confirmar) {
-        document.getElementById("alerta").classList.remove("d-none");
-        document.getElementById("alerta").textContent = 'Las contraseña no coinciden';
+        document.getElementById("alerta-reset").classList.remove("d-none");
+        document.getElementById("alerta-reset").textContent = 'Las contraseña no coinciden';
     } else {
         const frm = document.getElementById('frmrestablecer');
         const http = new XMLHttpRequest();
@@ -132,7 +132,7 @@ function frmRestablecer(e) {
         http.addEventListener('load', function(e) {
             document.getElementById('accion').textContent = 'Procesando ...';
             frm.reset();
-            document.getElementById("alerta").classList.add("d-none");
+            document.getElementById("alerta-reset").classList.add("d-none");
         });
         http.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {

@@ -1,11 +1,10 @@
 <?php
 class Clientes extends Controller{
     public function __construct() {
-        session_start();
+        parent::__construct();
         if (empty($_SESSION['activo'])) {
             header("location: ".BASE_URL);
         }
-        parent::__construct();
     }
     public function index()
     {
@@ -100,24 +99,28 @@ class Clientes extends Controller{
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function editar(int $id)
+    public function editar($id)
     {
         $data = $this->model->editarCli($id);
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function eliminar(int $id)
+    public function eliminar($id)
     {
-        $data = $this->model->accionCli(0, $id);
-        if ($data == 1) {
-            $msg = array('msg' => 'Cliente dado de baja', 'icono' => 'success');
-        } else {
-            $msg = array('msg' => 'Error al eliminar el cliente', 'icono' => 'error');
+        try {
+            $data = $this->model->accionCli(0, $id);
+            if ($data == 1) {
+                $msg = array('msg' => 'Cliente dado de baja', 'icono' => 'success');
+            } else {
+                $msg = array('msg' => 'Error al eliminar el cliente', 'icono' => 'error');
+            }
+        } catch (Throwable $t) {
+            $msg = array('msg' => 'Error Interno: ' . $t->getMessage(), 'icono' => 'error', 'file' => $t->getFile(), 'line' => $t->getLine());
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function reingresar(int $id)
+    public function reingresar($id)
     {
         $data = $this->model->accionCli(1, $id);
         if ($data == 1) {

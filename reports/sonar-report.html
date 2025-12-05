@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Informe de Calidad de Código</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Informe de Calidad de Código</h1>
+<p class="subtitle">php-mvc-local</p>
+<p class="date">05/10/2025 15:34</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#resumen-ejecutivo" id="toc-resumen-ejecutivo">Resumen
+Ejecutivo</a>
+<ul>
+<li><a href="#métricas-principales"
+id="toc-métricas-principales">Métricas Principales</a>
+<ul>
+<li><a href="#confiabilidad-y-seguridad"
+id="toc-confiabilidad-y-seguridad">Confiabilidad y Seguridad</a></li>
+<li><a href="#mantenibilidad"
+id="toc-mantenibilidad">Mantenibilidad</a></li>
+<li><a href="#tamaño-del-proyecto" id="toc-tamaño-del-proyecto">Tamaño
+del Proyecto</a></li>
+<li><a href="#calidad-de-código" id="toc-calidad-de-código">Calidad de
+Código</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#issues-críticos" id="toc-issues-críticos">Issues
+Críticos</a>
+<ul>
+<li><a href="#critical---code_smell"
+id="toc-critical---code_smell">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-1"
+id="toc-critical---code_smell-1">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-2"
+id="toc-critical---code_smell-2">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-3"
+id="toc-critical---code_smell-3">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-4"
+id="toc-critical---code_smell-4">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-5"
+id="toc-critical---code_smell-5">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-6"
+id="toc-critical---code_smell-6">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-7"
+id="toc-critical---code_smell-7">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-8"
+id="toc-critical---code_smell-8">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-9"
+id="toc-critical---code_smell-9">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-10"
+id="toc-critical---code_smell-10">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-11"
+id="toc-critical---code_smell-11">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-12"
+id="toc-critical---code_smell-12">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-13"
+id="toc-critical---code_smell-13">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-14"
+id="toc-critical---code_smell-14">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-15"
+id="toc-critical---code_smell-15">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-16"
+id="toc-critical---code_smell-16">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-17"
+id="toc-critical---code_smell-17">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-18"
+id="toc-critical---code_smell-18">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-19"
+id="toc-critical---code_smell-19">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-20"
+id="toc-critical---code_smell-20">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-21"
+id="toc-critical---code_smell-21">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-22"
+id="toc-critical---code_smell-22">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-23"
+id="toc-critical---code_smell-23">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---bug" id="toc-critical---bug">CRITICAL -
+BUG</a></li>
+<li><a href="#critical---code_smell-24"
+id="toc-critical---code_smell-24">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-25"
+id="toc-critical---code_smell-25">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-26"
+id="toc-critical---code_smell-26">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-27"
+id="toc-critical---code_smell-27">CRITICAL - CODE_SMELL</a></li>
+<li><a href="#critical---code_smell-28"
+id="toc-critical---code_smell-28">CRITICAL - CODE_SMELL</a></li>
+</ul></li>
+<li><a href="#todos-los-issues-top-30"
+id="toc-todos-los-issues-top-30">Todos los Issues (Top 30)</a>
+<ul>
+<li><a href="#minor-code_smell" id="toc-minor-code_smell">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-1" id="toc-minor-code_smell-1">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-2" id="toc-minor-code_smell-2">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-3" id="toc-minor-code_smell-3">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-4" id="toc-minor-code_smell-4">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-5" id="toc-minor-code_smell-5">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-6" id="toc-minor-code_smell-6">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-7" id="toc-minor-code_smell-7">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-8" id="toc-minor-code_smell-8">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-9" id="toc-minor-code_smell-9">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-10" id="toc-minor-code_smell-10">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-11" id="toc-minor-code_smell-11">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-12" id="toc-minor-code_smell-12">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-13" id="toc-minor-code_smell-13">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-14" id="toc-minor-code_smell-14">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-15" id="toc-minor-code_smell-15">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-16" id="toc-minor-code_smell-16">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-17" id="toc-minor-code_smell-17">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-18" id="toc-minor-code_smell-18">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-19" id="toc-minor-code_smell-19">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-20" id="toc-minor-code_smell-20">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-21" id="toc-minor-code_smell-21">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-22" id="toc-minor-code_smell-22">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-23" id="toc-minor-code_smell-23">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-24" id="toc-minor-code_smell-24">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-25" id="toc-minor-code_smell-25">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-26" id="toc-minor-code_smell-26">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-27" id="toc-minor-code_smell-27">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-28" id="toc-minor-code_smell-28">MINOR |
+CODE_SMELL</a></li>
+<li><a href="#minor-code_smell-29" id="toc-minor-code_smell-29">MINOR |
+CODE_SMELL</a></li>
+</ul></li>
+<li><a href="#hotspots-de-seguridad"
+id="toc-hotspots-de-seguridad">Hotspots de Seguridad</a></li>
+<li><a href="#archivos-con-baja-cobertura"
+id="toc-archivos-con-baja-cobertura">Archivos con Baja
+Cobertura</a></li>
+<li><a href="#historial-de-análisis"
+id="toc-historial-de-análisis">Historial de Análisis</a></li>
+</ul>
+</nav>
+<h1 id="resumen-ejecutivo">Resumen Ejecutivo</h1>
+<p><strong>Proyecto:</strong> php-mvc-local<br />
+<strong>Quality Gate:</strong> <strong>OK</strong></p>
+<h2 id="métricas-principales">Métricas Principales</h2>
+<h3 id="confiabilidad-y-seguridad">Confiabilidad y Seguridad</h3>
+<ul>
+<li><strong>Bugs:</strong> 190</li>
+<li><strong>Vulnerabilidades:</strong> 0</li>
+<li><strong>Hotspots de Seguridad:</strong> 0</li>
+<li><strong>Reliability Rating:</strong> 4.0/5</li>
+<li><strong>Security Rating:</strong> 1.0/5</li>
+</ul>
+<h3 id="mantenibilidad">Mantenibilidad</h3>
+<ul>
+<li><strong>Code Smells:</strong> 1692</li>
+<li><strong>Technical Debt Rating:</strong> 1.0/5</li>
+</ul>
+<h3 id="tamaño-del-proyecto">Tamaño del Proyecto</h3>
+<ul>
+<li><strong>Líneas de código:</strong> 15063</li>
+<li><strong>Archivos:</strong> 84</li>
+<li><strong>Funciones:</strong> 930</li>
+</ul>
+<h3 id="calidad-de-código">Calidad de Código</h3>
+<ul>
+<li><strong>Cobertura de tests:</strong> 0.0%</li>
+<li><strong>Duplicación:</strong> 37.9%</li>
+<li><strong>Tests totales:</strong> N/A</li>
+<li><strong>Tasa de éxito:</strong> N/A%</li>
+</ul>
+<h1 id="issues-críticos">Issues Críticos</h1>
+<h2 id="critical---code_smell">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S1186<br />
+<strong>Archivo:</strong> <code>Models/HomeModel.php</code> (línea
+3)<br />
+<strong>Mensaje:</strong> Add a nested comment explaining why this
+method is empty, throw an Exception or complete the implementation.</p>
+<h2 id="critical---code_smell-1">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrtools.php</code>
+(línea 131)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-2">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrtools.php</code>
+(línea 93)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-3">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrtools.php</code>
+(línea 64)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-4">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrtools.php</code>
+(línea 46)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-5">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 306)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-6">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 270)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-7">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 269)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-8">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 263)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-9">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 261)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-10">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 252)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-11">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 241)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-12">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S3776<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 193)<br />
+<strong>Mensaje:</strong> Refactor this function to reduce its Cognitive
+Complexity from 24 to the 15 allowed.</p>
+<h2 id="critical---code_smell-13">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 186)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-14">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 170)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-15">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 123)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-16">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 68)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-17">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S3776<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 66)<br />
+<strong>Mensaje:</strong> Refactor this function to reduce its Cognitive
+Complexity from 16 to the 15 allowed.</p>
+<h2 id="critical---code_smell-18">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S6600<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 62)<br />
+<strong>Mensaje:</strong> Remove the parentheses from this “return”
+call.</p>
+<h2 id="critical---code_smell-19">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 59)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-20">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S6600<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 53)<br />
+<strong>Mensaje:</strong> Remove the parentheses from this “return”
+call.</p>
+<h2 id="critical---code_smell-21">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrsplit.php</code>
+(línea 50)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-22">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 575)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-23">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 556)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---bug">CRITICAL - BUG</h2>
+<p><strong>Regla:</strong> php:S4824<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 492)<br />
+<strong>Mensaje:</strong> Make sure that the referenced value variable
+is unset after the loop.</p>
+<h2 id="critical---code_smell-24">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S1192<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 397)<br />
+<strong>Mensaje:</strong> Define a constant instead of duplicating this
+literal “” 3 times.</p>
+<h2 id="critical---code_smell-25">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 375)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-26">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 372)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-27">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 354)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h2 id="critical---code_smell-28">CRITICAL - CODE_SMELL</h2>
+<p><strong>Regla:</strong> php:S121<br />
+<strong>Archivo:</strong> <code>Libraries/phpqrcode/qrspec.php</code>
+(línea 301)<br />
+<strong>Mensaje:</strong> Add curly braces around the nested
+statement(s).</p>
+<h1 id="todos-los-issues-top-30">Todos los Issues (Top 30)</h1>
+<h3 id="minor-code_smell">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1780</li>
+<li><strong>Archivo:</strong> <code>index.php</code></li>
+<li><strong>Línea:</strong> 40</li>
+<li><strong>Mensaje:</strong> Remove this closing tag “?&gt;”.</li>
+</ul>
+<h3 id="minor-code_smell-1">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S113</li>
+<li><strong>Archivo:</strong> <code>index.php</code></li>
+<li><strong>Línea:</strong> ?</li>
+<li><strong>Mensaje:</strong> Add a new line at the end of this
+file.</li>
+</ul>
+<h3 id="minor-code_smell-2">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 199</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-3">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 193</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$existe”.</li>
+</ul>
+<h3 id="minor-code_smell-4">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 187</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-5">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 180</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-6">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 174</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-7">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 156</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-8">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 150</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-9">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 120</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-10">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 113</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-11">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 107</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-12">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 101</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-13">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 83</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-14">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 53</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-15">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 35</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-16">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 17</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-17">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 11</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-18">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1185</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> 4</li>
+<li><strong>Mensaje:</strong> Remove this method ” construct” to simply
+inherit it.</li>
+</ul>
+<h3 id="minor-code_smell-19">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S113</li>
+<li><strong>Archivo:</strong> <code>Models/VentasModel.php</code></li>
+<li><strong>Línea:</strong> ?</li>
+<li><strong>Mensaje:</strong> Add a new line at the end of this
+file.</li>
+</ul>
+<h3 id="minor-code_smell-20">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 147</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-21">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 141</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-22">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 135</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-23">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 129</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$existe”.</li>
+</ul>
+<h3 id="minor-code_smell-24">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 111</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-25">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 104</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-26">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 98</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-27">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 92</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-28">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 85</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h3 id="minor-code_smell-29">MINOR | CODE_SMELL</h3>
+<ul>
+<li><strong>Regla:</strong> php:S1488</li>
+<li><strong>Archivo:</strong> <code>Models/UsuariosModel.php</code></li>
+<li><strong>Línea:</strong> 78</li>
+<li><strong>Mensaje:</strong> Immediately return this expression instead
+of assigning it to the temporary variable “$data”.</li>
+</ul>
+<h1 id="hotspots-de-seguridad">Hotspots de Seguridad</h1>
+
+<h1 id="archivos-con-baja-cobertura">Archivos con Baja Cobertura</h1>
+
+<h1 id="historial-de-análisis">Historial de Análisis</h1>
+<hr />
+<p><em>Generado desde: http://localhost:9000</em></p>
+</body>
+</html>

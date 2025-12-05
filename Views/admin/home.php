@@ -79,7 +79,7 @@
                             <div class="card-content">
                                 <h5 class="font-15">Productos</h5>
                                 <h2 class="mb-3 font-18"><?php echo $data['productos']['total']; ?></h2>
-                                <p class="mb-0"><span class="col-green"><a href="<?php echo BASE_URL; ?>productos">Ver Detalle</a></span></p>
+                                <p class="mb-0"><span class="col-green"><a href="<?php echo BASE_URL; ?>productos/admin">Ver Detalle</a></span></p>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">

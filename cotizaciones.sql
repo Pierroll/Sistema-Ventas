@@ -107,7 +107,8 @@ CREATE TABLE IF NOT EXISTS `clientes` (
 
 -- Volcando datos para la tabla venta.clientes: ~0 rows (aproximadamente)
 INSERT INTO `clientes` (`id`, `dni`, `nombre`, `telefono`, `direccion`, `fecha`, `estado`) VALUES
-	(1, '334432423', 'NOMBRE DEL CLIENTE', '676768867', 'LIMA PERU', '2022-10-28 20:28:01', 1);
+	(1, '334432423', 'NOMBRE DEL CLIENTE', '676768867', 'LIMA PERU', '2022-10-28 20:28:01', 1),
+	(2, '12345678', 'Cliente Test', '987654321', 'DIRECCION TEST', '2023-01-01 00:00:00', 1);
 
 -- Volcando estructura para tabla venta.compras
 CREATE TABLE IF NOT EXISTS `compras` (
@@ -495,7 +496,8 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 
 -- Volcando datos para la tabla venta.usuarios: ~0 rows (aproximadamente)
 INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `correo`, `telefono`, `direccion`, `perfil`, `clave`, `id_caja`, `token`, `fecha`, `estado`) VALUES
-	(1, 'SUPER ADMINISTRADOR', NULL, 'admin@agmail.com', NULL, NULL, 'avatar.svg', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1, NULL, '2022-05-28 16:29:38', 1);
+	(1, 'SUPER ADMINISTRADOR', NULL, 'admin@agmail.com', NULL, NULL, 'avatar.svg', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1, NULL, '2022-05-28 16:29:38', 1),
+	(2, 'VENDEDOR', NULL, 'vendedor@agmail.com', NULL, NULL, 'avatar.svg', 'f3c2b74c8f3c12759451c6a5545c10847c7046d6b13c843953b4647055b05d54', 1, NULL, '2022-05-28 16:29:38', 1);
 
 -- Volcando estructura para tabla venta.ventas
 CREATE TABLE IF NOT EXISTS `ventas` (
