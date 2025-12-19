@@ -24,12 +24,11 @@ $array = explode("/", $ruta);
 
 $controller = isset($array[0]) ? ucfirst(strClean($array[0])) : "Home";
 $metodo = isset($array[1]) && !empty($array[1]) ? strClean($array[1]) : "index";
-$parametro = "";
+$parametros = [];
 
 // Procesar parámetros adicionales
 if (isset($array[2]) && !empty($array[2])) {
     $parametros = array_slice($array, 2);
-    $parametro = implode(",", array_map('strClean', $parametros));
 }
 
 // Cargar controlador
@@ -42,7 +41,7 @@ if (file_exists($dirControllers)) {
         $objController = new $controller();
 
         if (method_exists($objController, $metodo)) {
-            $objController->$metodo($parametro);
+            call_user_func_array(array($objController, $metodo), $parametros);
         } else {
             header(HEADER_LOCATION . BASE_URL . ERROR_ROUTE);
         }

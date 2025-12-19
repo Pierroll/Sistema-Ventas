@@ -11,9 +11,21 @@ class VentasModel extends Query
         $data = $this->selectAll($sql);
         return $data;
     }
+    public function buscarProducto(string $cod)
+    {
+        $sql = "SELECT * FROM productos WHERE codigo LIKE '%" . $cod . "%' AND estado = 1 OR descripcion LIKE '%" . $cod . "%' AND estado = 1";
+        $data = $this->selectAll($sql);
+        return $data;
+    }
     public function getProductos(int $id)
     {
         $sql = "SELECT * FROM productos WHERE id = $id";
+        $data = $this->select($sql);
+        return $data;
+    }
+    public function getProductoPorCodigo(string $codigo)
+    {
+        $sql = "SELECT * FROM productos WHERE codigo = '$codigo'";
         $data = $this->select($sql);
         return $data;
     }

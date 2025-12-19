@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
         minLength: 2,
         source: function(request, response) {
             $.ajax({
-                url: base_url + "compras/buscarProducto",
+                url: base_url + "ventas/buscarProducto",
                 dataType: "json",
                 data: {
                     pro: request.term,
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function cargarDetalleVenta() {
-    const url = base_url + "compras/listar/detalle_temp";
+    const url = base_url + "ventas/listar/detalle_temp";
     const http = new XMLHttpRequest();
     http.open("GET", url, true);
     http.send();

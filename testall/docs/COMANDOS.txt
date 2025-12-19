@@ -1,0 +1,60 @@
+✦ Entendido. Aquí tienes la lista completa de comandos para ejecutar cada una de las pruebas E2E que hemos trabajado o creado, usando el proyecto modules (Chrome):
+
+  ---
+
+  Pruebas de Autenticación (`e2e/auth/`)
+
+   1. `FUNC-AUTH-01.spec.js` (Login exitoso como admin)
+
+   1     npx playwright test e2e/auth/FUNC-AUTH-01.spec.js --project=modules
+
+   2. `FUNC-AUTH-02.spec.js` (Probablemente login fallido)
+
+   1     npx playwright test e2e/auth/FUNC-AUTH-02.spec.js --project=modules
+
+   3. `FUNC-AUTH-03.spec.js` (Probablemente recuperación de contraseña o similar)
+
+   1     npx playwright test e2e/auth/FUNC-AUTH-03.spec.js --project=modules
+
+   4. `FUNC-AUTH-04.spec.js` (Otro escenario de autenticación)
+   1     npx playwright test e2e/auth/FUNC-AUTH-04.spec.js --project=modules
+
+   5. `FUNC-AUTH-06.spec.js` (Otro escenario de autenticación)
+   1     npx playwright test e2e/auth/FUNC-AUTH-06.spec.js --project=modules
+
+  ---
+
+  Pruebas de Usuarios (`e2e/users/`)
+
+   1. `FUNC-USER-04.spec.js` (Admin: Desactivar un usuario)
+   1     npx playwright test e2e/users/FUNC-USER-04.spec.js --project=modules
+
+  ---
+
+  Pruebas de Productos (`e2e/products/`)
+
+   1. `FUNC-PRO-01.spec.js` (Editar precio de venta de un producto existente)
+
+   1     npx playwright test e2e/products/FUNC-PRO-01.spec.js --project=modules
+
+  ---
+
+  Pruebas de Clientes (`e2e/clients/`)
+
+   1. `FUNC-CLI-01.spec.js` (Crear un nuevo cliente)
+
+   1     npx playwright test e2e/clients/FUNC-CLI-04.spec.js --project=modules
+
+  ---
+
+  Pruebas de Categorías (`e2e/categories/`)
+
+   1. `FUNC-CAT-01.spec.js` (Crear una nueva categoría)
+   1     npx playwright test e2e/categories/FUNC-CAT-01.spec.js --project=modules
+
+  ---
+
+  Pruebas de Medidas (`e2e/measures/`)
+
+   1. `FUNC-MED-01.spec.js` (Crear una nueva medida)
+   1     npx playwright test e2e/measures/FUNC-MED-01.spec.js --project=modules

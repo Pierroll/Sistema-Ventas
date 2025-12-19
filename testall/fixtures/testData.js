@@ -5,9 +5,9 @@ export const TestUsers = {
     role: 'Administrador'
   },
   vendedor: {
-    email: 'vendedor@agmail.com',
+    email: 'vendedor@gmail.com',
     password: 'vendedor',
-    name: 'Vendedor Test',
+    name: 'VENDEDOR 01',
     role: 'Vendedor'
   }
 };

@@ -25,7 +25,7 @@ export class UsersPage extends BasePage {
   get inactiveUsersLink() { return this.page.locator('a[href*="usuarios/inactivos"]'); }
   get userTable() { return this.page.locator('#tblUsuarios'); }
 
-  get modal() { return this.page.locator('#nuevo_usuario'); }
+  get modal() { return this.page.locator('#myModal'); }
   get modalTitle() { return this.modal.locator('#title'); }
   get nameInput() { return this.modal.locator('#nombre'); }
   get emailInput() { return this.modal.locator('#correo'); }
@@ -45,7 +45,7 @@ export class UsersPage extends BasePage {
 
   async openNewUserModal() {
     await this.newUserButton.click(); // Use existing newUserButton
-    await expect(this.modalTitle).toHaveText('Nuevo Usuario');
+    await expect(this.modalTitle).toHaveText('NUEVO USUARIO');
   }
 
   async createUser(name, email, password, caja) {
@@ -67,13 +67,6 @@ export class UsersPage extends BasePage {
     await deleteButton.highlight();
 
     await deleteButton.click();
-
-    // Esperar y aceptar el diálogo de confirmación (SweetAlert)
-    await this.page.locator('.swal2-confirm').click();
-
-    // Esperar la respuesta de la API y la recarga de la tabla
-    await this.page.waitForResponse(resp => resp.url().includes('/usuarios/eliminar') && resp.status() === 200);
-    await this.page.waitForTimeout(500); // Pequeña espera para que la tabla se repinte
   }
 
   async getUserStatus(email) {

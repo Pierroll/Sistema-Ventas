@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <?php include "Views/templates/header.php"; ?>
 <?php if ($data['existe']) { ?>
     <button class="btn btn-outline-primary mb-2" type="button" onclick="frmProducto();"><i class="fas fa-plus"></i></button>

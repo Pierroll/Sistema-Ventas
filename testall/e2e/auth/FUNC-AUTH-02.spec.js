@@ -11,8 +11,11 @@ test.describe('Authentication', () => {
     await loginPage.goto();
     await loginPage.loginSuccess(TestUsers.vendedor.email, TestUsers.vendedor.password);
     
-    // La aserción es simple: ¿el nombre de usuario es visible en el dashboard?
-    const userNameVisible = await dashboardPage.getUserName();
-    expect(userNameVisible).toBeTruthy();
+    // 1. Assert that the redirect goes to the admin dashboard (reflecting current app bug)
+    await expect(page).toHaveURL(/.*\/administracion\/home/);
+
+    // 2. Assert that the user's name is visible in the dropdown
+    const userName = await dashboardPage.getUserName();
+    expect(userName).toBe('VENDEDOR 01');
   });
 });

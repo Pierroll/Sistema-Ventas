@@ -9,6 +9,9 @@ export class DashboardPage extends BasePage {
     this.logoutButton = page.locator('a[href*="salir"].dropdown-item');
     this.usersLink = page.locator('div.card:has(h5:has-text("Usuarios")) a:has-text("Ver Detalle")');
     this.productsLink = page.locator('div.card:has(h5:has-text("Productos")) a:has-text("Ver Detalle")');
+    this.clientsLink = page.locator('div.card:has(h5:has-text("Clientes")) a:has-text("Ver Detalle")');
+    this.categoriesLink = page.locator('div.card:has(h5:has-text("Categorias")) a:has-text("Ver Detalle")');
+    this.measuresLink = page.locator('div.card:has(h5:has-text("Medidas")) a:has-text("Ver Detalle")');
   }
 
   async navigateToUsers() {
@@ -20,7 +23,26 @@ export class DashboardPage extends BasePage {
   async navigateToProducts() {
     await this.productsLink.click();
     await this.page.waitForURL(/.*\/productos\/admin/);
-    await this.page.waitForSelector('table', { timeout: 10000 }); // Espera a que la tabla de productos esté visible
+    // FIX: Esperar el selector de tabla correcto y específico.
+    await this.page.waitForSelector('#tblProductos', { timeout: 10000 });
+  }
+
+  async navigateToClients() {
+    await this.clientsLink.click();
+    await this.page.waitForURL(/.*\/clientes/);
+    await this.page.waitForSelector('table', { timeout: 10000 }); // Espera a que la tabla de clientes esté visible
+  }
+
+  async navigateToCategories() {
+    await this.categoriesLink.click();
+    await this.page.waitForURL(/.*\/categorias/);
+    await this.page.waitForSelector('table', { timeout: 10000 });
+  }
+
+  async navigateToMeasures() {
+    await this.measuresLink.click();
+    await this.page.waitForURL(/.*\/medidas/);
+    await this.page.waitForSelector('table', { timeout: 10000 });
   }
 
   async isOnDashboard() {

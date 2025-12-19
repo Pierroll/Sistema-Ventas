@@ -20,7 +20,8 @@ trait UsuariosAuthTrait
         if (empty($correo) || empty($clave)) {
             $this->responderJSON([
                 'success' => false,
-                'msg' => 'Correo y contraseña son requeridos'
+                'msg' => 'rellena credenciales por favor',
+                'icono' => USUARIOS_ICONO_WARNING
             ], 400);
         }
 

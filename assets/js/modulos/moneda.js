@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
         ],
         language: {
-            url: '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json',
+            url: base_url + 'assets/js/i18n/Spanish.json',
         },
         dom,
         buttons,
@@ -99,7 +99,7 @@ function btnEditarMoneda(id) {
     http.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             const res = JSON.parse(this.responseText);
-            id_moneda.value = res.nombre;
+            id_moneda.value = res.id;
             nombre.value = res.nombre;
             simbolo.value = res.simbolo;
             myModal.show();

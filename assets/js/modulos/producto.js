@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { data: 'eliminar' },
         ],
         language: {
-            url: '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json',
+            url: base_url + 'assets/js/i18n/Spanish.json',
         },
         createdRow: function(row, data, index) {
             //pintar una celda

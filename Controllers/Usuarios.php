@@ -227,7 +227,7 @@ class Usuarios extends Controller
     /**
      * POST /usuarios/editar/{id} - Obtiene datos de un usuario
      */
-    public function editar(int $id)
+    public function editar($id)
     {
         $data = $this->model->editarUser($id);
         $this->responderJSON($data);
@@ -236,7 +236,7 @@ class Usuarios extends Controller
     /**
      * POST /usuarios/eliminar/{id} - Da de baja un usuario
      */
-    public function eliminar(int $id)
+    public function eliminar($id)
     {
         $data = $this->model->accionUser(0, $id);
         $msg = ($data == 1)
@@ -249,7 +249,7 @@ class Usuarios extends Controller
     /**
      * POST /usuarios/reingresar/{id} - Reactiva un usuario
      */
-    public function reingresar(int $id)
+    public function reingresar($id)
     {
         $data = $this->model->accionUser(1, $id);
         $msg = ($data == 1)

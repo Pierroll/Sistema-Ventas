@@ -12,26 +12,37 @@ class Productos extends Controller
         parent::__construct();
     }
 
-    // ============ MÉTODOS PARA TESTSPRITE ============
+    public function admin()
+    {
+        $id_user = $_SESSION['id_usuario'];
+        $data['permisos'] = $this->model->verificarPermisos($id_user, "crear_producto");
+        if (!empty($data['permisos']) || $id_user == 1) {
+            $data['existe'] = true;
+        } else {
+            $data['existe'] = false;
+        }
+        $data['medidas'] = $this->model->getMedidas();
+        $data['categorias'] = $this->model->getCategorias();
+        $data['modal'] = 'producto';
+        $this->views->getView('productos',  "index", $data);
+    }
 
     /**
      * GET /productos - Listar todos los productos activos
      */
     public function index()
     {
-        try {
-            $data = $this->model->getProductos(1);
-            http_response_code(200);
-            echo json_encode(array(
-                'success' => true,
-                'data' => $data,
-                'count' => count($data)
-            ), JSON_UNESCAPED_UNICODE);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(array('success' => false, 'msg' => 'Error al obtener productos'));
+        $id_user = $_SESSION['id_usuario'];
+        $data['permisos'] = $this->model->verificarPermisos($id_user, "crear_producto");
+        if (!empty($data['permisos']) || $id_user == 1) {
+            $data['existe'] = true;
+        } else {
+            $data['existe'] = false;
         }
-        die();
+        $data['medidas'] = $this->model->getMedidas();
+        $data['categorias'] = $this->model->getCategorias();
+        $data['modal'] = 'producto';
+        $this->views->getView('productos',  "index", $data);
     }
 
     /**
@@ -68,22 +79,7 @@ class Productos extends Controller
         die();
     }
 
-    // ============ MÉTODOS EXISTENTES (PARA NAVEGADOR) ============
-
-    public function admin()
-    {
-        $id_user = $_SESSION['id_usuario'];
-        $data['permisos'] = $this->model->verificarPermisos($id_user, "crear_producto");
-        if (!empty($data['permisos']) || $id_user == 1) {
-            $data['existe'] = true;
-        } else {
-            $data['existe'] = false;
-        }
-        $data['medidas'] = $this->model->getMedidas();
-        $data['categorias'] = $this->model->getCategorias();
-        $data['modal'] = 'producto';
-        $this->views->getView('productos',  "index", $data);
-    }
+    // ============ MÉTODOS EXISTENTES (PARA NAVEGADOR) ============ 
 
     public function listar()
     {
@@ -95,16 +91,19 @@ class Productos extends Controller
         for ($i = 0; $i < count($data); $i++) {
             $data[$i]['date'] = $date;
             $data[$i]['imagen'] = '<img class="img-thumbnail" src="' . BASE_URL . "assets/img/pro/" . $data[$i]['foto'] . '" width="50">';
+            
             $data[$i]['editar'] = '';
-            $data[$i]['eliminar'] = '';
-            $data[$i]['subTotal'] = '<span class="badge bg-info">'.number_format($data[$i]['cantidad'] * $data[$i]['precio_venta'], 2).'</span>';
-            $data[$i]['estado'] = '<span class="badge bg-success">Activo</span>';
             if (!empty($modificar) || $id_user == 1) {
                 $data[$i]['editar'] = '<button class="btn btn-outline-primary" type="button" onclick="btnEditarPro(' . $data[$i]['id'] . ');"><i class="fas fa-edit"></i></button>';
             }
+
+            $data[$i]['eliminar'] = '';
             if (!empty($eliminar) || $id_user == 1) {
                 $data[$i]['eliminar'] = '<button class="btn btn-outline-danger" type="button" onclick="btnEliminarPro(' . $data[$i]['id'] . ');"><i class="fas fa-trash-alt"></i></button>';
             }
+
+            $data[$i]['subTotal'] = '<span class="badge bg-info">'.number_format($data[$i]['cantidad'] * $data[$i]['precio_venta'], 2).'</span>';
+            $data[$i]['estado'] = '<span class="badge bg-success">Activo</span>';
         }
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         die();
@@ -271,7 +270,8 @@ class Productos extends Controller
                         $cant_total = $cantidad['cantidad'] + $agregar;
                         $this->model->actualizarStock($cant_total, $id);
                         $msg = array('msg' => 'Cantidad del producto Ajustado', 'icono' => 'success');
-                    } else {
+                    }
+                     else {
                         $msg = array('msg' => 'Error al ajustar', 'icono' => 'error');
                     }
                 } else {
@@ -303,3 +303,5 @@ class Productos extends Controller
         $this->views->getView('productos',  "inactivos", $data);
     }
 }
+
+

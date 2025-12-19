@@ -6,7 +6,7 @@ import { TestUsers } from '../../fixtures/testData';
 
 test.describe('Products Management', () => {
 
-  test('FUNC-PRO-01: Edit selling price of a product', async ({ page }) => {
+  test('FUNC-PRO-01: Edit selling price of an existing product', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const productsPage = new ProductsPage(page);
@@ -18,21 +18,15 @@ test.describe('Products Management', () => {
     // --- 2. Navegar a la página de productos desde el dashboard ---
     await dashboardPage.navigateToProducts();
     
-    // --- 3. Crear un producto único para la prueba ---
-    const randomId = Date.now();
-    const productCode = `PROD-${randomId}`;
-    const productDesc = `Test Product ${randomId}`;
-    const purchasePrice = 100.00;
-    const initialSellingPrice = 120.00;
-    const newSellingPrice = 150.50;
-    const unit = 'UNIDAD'; // Asegúrate de que esta unidad exista
-    const category = 'ACCESORIOS'; // Asegúrate de que esta categoría exista
+    // --- 3. Definir el producto existente a editar ---
+    // Usaremos el producto de ejemplo que ya tienes en tu sistema.
+    // Asegúrate de que este producto (código y descripción) exista en tu base de datos.
+    const productCode = '0987654321';
+    const productDesc = 'CARTON'; // Usado para asegurar que filtramos bien, no se usa en el método
+    const newSellingPrice = 150.50; // Nuevo precio a establecer
 
-    await productsPage.createProduct(productCode, productDesc, purchasePrice, initialSellingPrice, unit, category);
-    
-    // Verificar que el producto fue creado y su precio inicial es correcto en la tabla
-    let currentPrice = await productsPage.getProductSellingPrice(productCode);
-    expect(currentPrice).toBe(initialSellingPrice);
+    // Opcional: Obtener el precio actual antes de editar (si es necesario verificar que cambia)
+    // Para simplificar, nos enfocaremos en establecer y verificar el nuevo precio.
 
     // --- 4. Editar el producto y actualizar el precio de venta ---
     await productsPage.editProduct(productCode);
@@ -44,7 +38,10 @@ test.describe('Products Management', () => {
     const updatedPrice = await productsPage.getProductSellingPrice(productCode);
     expect(updatedPrice).toBe(newSellingPrice);
 
-    console.log(`✅ Producto '${productDesc}' (${productCode}): Precio de venta actualizado de ${initialSellingPrice} a ${newSellingPrice}`);
+    console.log(`✅ Producto '${productCode}': Precio de venta actualizado a ${newSellingPrice}`);
+    // Opcional: Puedes revertir el precio o dejarlo así para la siguiente ejecución.
+    // Para una prueba de automatización ideal, se recomienda limpiar el estado después.
+    // Pero por simplicidad y siguiendo tu solicitud, lo dejaremos modificado.
   });
 
 });

@@ -26,13 +26,17 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("direccion").value = ui.item.direccion;
         },
     });
+    // Global setting for DataTables language
+    $.extend(true, $.fn.dataTable.defaults, {
+        language: {
+            url: base_url + 'assets/js/i18n/Spanish.json'
+        }
+    });
+
     tbl = $("#tbl").DataTable({
         responsive: true,
         processing: true,
         serverSide: false,
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
-        },
         destroy: true,
         iDisplayLength: 10,
         order: [

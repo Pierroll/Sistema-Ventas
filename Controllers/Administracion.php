@@ -201,4 +201,94 @@ class Administracion extends Controller
     {
         $this->views->getView('admin', "permisos");
     }
+
+    public function moneda()
+    {
+        $permisos = $this->model->verificarPermisos($this->id_usuario, "configuracion");
+        if (!empty($permisos) || $this->id_usuario == 1) {
+            $data['modal'] = 'moneda';
+            $this->views->getView('admin', "moneda", $data);
+        } else {
+            header('Location: ' . BASE_URL . 'administracion/permisos');
+        }
+    }
+
+    public function listarMonedas()
+    {
+        $data = $this->model->getMonedas(1);
+        for ($i = 0; $i < count($data); $i++) {
+            if ($data[$i]['estado'] == 1) {
+                $data[$i]['estado'] = '<span class="badge bg-success">Activo</span>';
+                $data[$i]['editar'] = '<button class="btn btn-primary" type="button" onclick="btnEditarMoneda(' . $data[$i]['id'] . ');"><i class="fas fa-edit"></i></button>';
+                $data[$i]['eliminar'] = '<button class="btn btn-danger" type="button" onclick="btnEliminarMoneda(' . $data[$i]['id'] . ');"><i class="fas fa-trash-alt"></i></button>';
+            } else {
+                $data[$i]['estado'] = '<span class="badge bg-danger">Inactivo</span>';
+                $data[$i]['editar'] = '<button class="btn btn-success" type="button" onclick="btnReingresarMoneda(' . $data[$i]['id'] . ');"><i class="fas fa-reply"></i></button>';
+                $data[$i]['eliminar'] = '';
+            }
+        }
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        die();
+    }
+
+    public function registrarMoneda()
+    {
+        $simbolo = strClean($_POST['simbolo']);
+        $nombre = strClean($_POST['nombre']);
+        $id = strClean($_POST['id']);
+        if (empty($simbolo) || empty($nombre)) {
+            $msg = "Todos los campos son obligatorios";
+        } else {
+            if ($id == "") {
+                $data = $this->model->registrarMoneda($simbolo, $nombre);
+                if ($data == "ok") {
+                    $msg = "ok";
+                } else if ($data == "existe") {
+                    $msg = "La moneda ya existe";
+                } else {
+                    $msg = "Error al registrar la moneda";
+                }
+            } else {
+                $data = $this->model->modificarMoneda($simbolo, $nombre, $id);
+                if ($data == "modificado") {
+                    $msg = "modificado";
+                } else {
+                    $msg = "Error al modificar la moneda";
+                }
+            }
+        }
+        echo json_encode($msg, JSON_UNESCAPED_UNICODE);
+        die();
+    }
+
+    public function editarMoneda(int $id)
+    {
+        $data = $this->model->editarMoneda($id);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        die();
+    }
+
+    public function eliminarMoneda(int $id)
+    {
+        $data = $this->model->accionMoneda(0, $id);
+        if ($data == 1) {
+            $msg = "ok";
+        } else {
+            $msg = "Error al eliminar la moneda";
+        }
+        echo json_encode($msg, JSON_UNESCAPED_UNICODE);
+        die();
+    }
+
+    public function reingresarMoneda(int $id)
+    {
+        $data = $this->model->accionMoneda(1, $id);
+        if ($data == 1) {
+            $msg = "ok";
+        } else {
+            $msg = "Error al reingresar la moneda";
+        }
+        echo json_encode($msg, JSON_UNESCAPED_UNICODE);
+        die();
+    }
 }

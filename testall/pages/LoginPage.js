@@ -18,16 +18,21 @@ export class LoginPage extends BasePage {
   async loginSuccess(email, password) {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
-    await this.loginButton.click();
-    await this.page.waitForSelector('.swal2-container', { state: 'hidden', timeout: 5000 });
-    await this.page.waitForURL('**/home');
+    // Wait for the navigation to complete after clicking
+    await Promise.all([
+        this.page.waitForNavigation({ waitUntil: 'networkidle' }),
+        this.loginButton.click()
+    ]);
   }
 
   async loginFailure(email, password) {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
-    await this.page.waitForSelector('#alerta:not(.d-none)', { timeout: 10000 });
+    // Wait for the SweetAlert modal to be visible
+    await this.page.waitForSelector('.swal2-container.swal2-center.swal2-backdrop-show', { state: 'visible', timeout: 10000 });
+    // Assert that the error icon is visible
+    await expect(this.page.locator('.swal2-icon-error')).toBeVisible();
   }
 
   async isOnLoginPage() {

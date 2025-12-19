@@ -5,24 +5,59 @@ use App\Config\Exceptions\SaleOperationException;
 
 class Ventas extends Controller
 {
-    private $id_usuario;
+    public function __construct()
+    {
+        parent::__construct();
+        if (empty($_SESSION['activo'])) {
+            header("location: " . BASE_URL);
+        }
+        $this->id_usuario = $_SESSION['id_usuario'];
+    }
+    public function index()
+    {
+        $perm = $this->model->verificarPermisos($this->id_usuario, "nueva_venta");
+        if (!empty($perm) || $this->id_usuario == 1) {
+            $data = $this->model->getEmpresa();
+            $this->views->getView('ventas',   "index", $data);
+        } else {
+            header('Location: ' . BASE_URL . 'administracion/permisos');
+        }
+    }
 
-    // Constantes de mensajes
-    private const MSG_VENTA_NO_ENCONTRADA = 'Venta no encontrada';
-    private const MSG_VENTA_ANULADA = 'Venta anulada';
-    private const MSG_VENTA_ELIMINADA = 'Venta eliminada';
-    private const MSG_NO_STOCK = 'No hay Stock, te quedan ';
-    private const MSG_PRODUCTO_INGRESADO = 'Producto ingresado a la venta';
-    private const MSG_PRODUCTO_ACTUALIZADO = 'Producto actualizado';
-    private const MSG_ERROR_INGRESAR = 'Error al ingresar el producto a la venta';
-    private const MSG_ERROR_ACTUALIZAR = 'Error al actualizar el producto';
-    private const MSG_VENTA_GENERADA = 'Venta Generada';
-    private const MSG_CAJA_CERRADA = 'La caja esta cerrada';
+    public function buscarProducto()
+    {
+        if (empty($_GET['pro'])) {
+            echo json_encode([]);
+            die();
+        }
+        $data = $this->model->buscarProducto($_GET['pro']);
+        $datos = array();
+        foreach ($data as $row) {
+            $item = array();
+            $item['id'] = $row['id'];
+            $item['label'] = $row['codigo'] . ' - ' . $row['descripcion'];
+            $item['value'] = $row['id'];
+            array_push($datos, $item);
+        }
+        echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+        die();
+    }
 
-    private const ERR_ID_REQUERIDO = 'ID requerido';
-    private const ERR_ANULAR_VENTA = 'Error al anular la venta';
-    private const ERR_ELIMINAR_VENTA = 'Error al eliminar la venta';
-    private const ERR_VENTA_REALIZAR = 'Error al realizar la venta';
+    public function listar($table)
+    {
+        $id_usuario = $_SESSION['id_usuario'];
+        $data['detalle'] = $this->model->getDetalle($table, $id_usuario);
+        $total = 0.00;
+        for ($i = 0; $i < count($data['detalle']); $i++) {
+            $subTotal = $data['detalle'][$i]['precio'] * $data['detalle'][$i]['cantidad'];
+            $total += $subTotal;
+            $data['detalle'][$i]['precio'] = number_format((float)$data['detalle'][$i]['precio'], 2);
+            $data['detalle'][$i]['sub_total'] = number_format($subTotal, 2);
+        }
+        $data['total_pagar'] = number_format($total, 2);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        die();
+    }
 
     private function errorJson(int $code, string $msg): void
     {
@@ -118,15 +153,37 @@ class Ventas extends Controller
     {
         $id = strClean($id_producto);
         $datos = $this->model->getProductos($id);
+        if (empty($datos)) {
+            echo json_encode(['msg' => 'Producto no encontrado', 'icono' => 'error'], JSON_UNESCAPED_UNICODE);
+            die();
+        }
         $precio = $datos['precio_venta'];
         $cantidad = 1;
-        $comprobar = $this->model->consultarDetalle('detalle_temp', $id, $this->id_usuario);
-        $cantidad_dis = $datos['cantidad'];
-
-        $msg = $comprobar === null || $comprobar === false || (is_array($comprobar) && empty($comprobar))
-            ? $this->procesarNuevaVenta($id, $cantidad, $cantidad_dis, $precio, $id_producto)
-            : $this->procesarVentaExistente($id, $comprobar, $cantidad, $cantidad_dis, $precio, $id_producto);
-
+        $comprobar = $this->model->consultarDetalle('detalle_temp', $datos['id'], $this->id_usuario);
+        if (empty($comprobar)) {
+            if ($datos['cantidad'] < $cantidad) {
+                $msg = ['msg' => 'Stock no disponible', 'icono' => 'warning'];
+            } else {
+                $data = $this->model->registrarDetalle('detalle_temp', $datos['id'], $this->id_usuario, (string)$precio, $cantidad);
+                if ($data === "ok") {
+                    $msg = ['msg' => 'Producto ingresado', 'icono' => 'success'];
+                } else {
+                    $msg = ['msg' => 'Error al ingresar el producto', 'icono' => 'error'];
+                }
+            }
+        } else {
+            $total_cantidad = $comprobar['cantidad'] + $cantidad;
+            if ($datos['cantidad'] < $total_cantidad) {
+                $msg = ['msg' => 'Stock no disponible', 'icono' => 'warning'];
+            } else {
+                $data = $this->model->actualizarDetalle('detalle_temp', (string)$precio, $total_cantidad, $datos['id'], $this->id_usuario);
+                if ($data === "modificado") {
+                    $msg = ['msg' => 'Producto actualizado', 'icono' => 'success'];
+                } else {
+                    $msg = ['msg' => 'Error al actualizar', 'icono' => 'error'];
+                }
+            }
+        }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
     }
@@ -134,36 +191,36 @@ class Ventas extends Controller
     /**
      * Procesar nueva venta
      */
-    private function procesarNuevaVenta(int $cantidad, int $cantidad_dis, float $precio, string $id): array
+    private function procesarNuevaVenta(string $id, int $cantidad, mixed $cantidad_dis, float $precio): array
     {
         if ($cantidad_dis < $cantidad) {
-            return ['msg' => self::MSG_NO_STOCK . $cantidad_dis, 'icono' => 'warning'];
+            return ['msg' => 'Stock no disponible: ' . $cantidad_dis, 'icono' => 'warning'];
         }
 
-        $data = $this->model->registrarDetalle('detalle_temp', $id, $this->id_usuario, $precio, $cantidad);
+        $data = $this->model->registrarDetalle('detalle_temp', (int)$id, $this->id_usuario, (string)$precio, $cantidad);
         if ($data === "ok") {
-            return ['msg' => self::MSG_PRODUCTO_INGRESADO, 'icono' => 'success'];
+            return ['msg' => 'Producto ingresado', 'icono' => 'success'];
         }
-        return ['msg' => self::MSG_ERROR_INGRESAR, 'icono' => 'error'];
+        return ['msg' => 'Error al ingresar el producto', 'icono' => 'error'];
     }
 
     /**
      * Procesar venta existente
      */
-    private function procesarVentaExistente(array $comprobar, int $cantidad, int $cantidad_dis, float $precio, string $id_producto): array
+    private function procesarVentaExistente(string $id, array $comprobar, int $cantidad, mixed $cantidad_dis, float $precio): array
     {
         $total_cantidad = $comprobar['cantidad'] + $cantidad;
-        $stock_disponible = $cantidad_dis - $comprobar['cantidad'];
+        $stock_disponible = (int)$cantidad_dis - $comprobar['cantidad'];
 
-        if ($cantidad_dis < $total_cantidad) {
-            return ['msg' => self::MSG_NO_STOCK . $stock_disponible, 'icono' => 'warning'];
+        if ((int)$cantidad_dis < $total_cantidad) {
+            return ['msg' => 'Stock no disponible: ' . $stock_disponible, 'icono' => 'warning'];
         }
 
-        $data = $this->model->actualizarDetalle('detalle_temp', $precio, $total_cantidad, $id_producto, $this->id_usuario);
+        $data = $this->model->actualizarDetalle('detalle_temp', (string)$precio, $total_cantidad, (int)$id, $this->id_usuario);
         if ($data === "modificado") {
-            return ['msg' => self::MSG_PRODUCTO_ACTUALIZADO, 'icono' => 'success'];
+            return ['msg' => 'Producto actualizado', 'icono' => 'success'];
         }
-        return ['msg' => self::MSG_ERROR_ACTUALIZAR, 'icono' => 'error'];
+        return ['msg' => 'Error al actualizar el producto', 'icono' => 'error'];
     }
 
     public function cantidadVenta(): void
@@ -182,7 +239,7 @@ class Ventas extends Controller
                     $msg = ['msg' => 'error al agregar', 'icono' => 'warning'];
                 }
             } else {
-                $msg = ['msg' => self::MSG_NO_STOCK . $producto['cantidad'], 'icono' => 'warning'];
+                $msg = ['msg' => 'Stock no disponible: ' . $producto['cantidad'], 'icono' => 'warning'];
             }
             echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         }

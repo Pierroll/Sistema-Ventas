@@ -10,62 +10,63 @@ function frmLogin(e) {
     e.preventDefault();
     const correo = document.getElementById("correo");
     const clave = document.getElementById("clave");
-    if (correo.value == "") {
-        clave.classList.remove("is-invalid");
-        correo.classList.add("is-invalid");
-        correo.focus();
-    } else if (clave.value == "") {
-        correo.classList.remove("is-invalid");
-        clave.classList.add("is-invalid");
-        clave.focus();
-    } else {
-        const url = base_url + "usuarios/validar";
-        const frm = document.getElementById("frmLogin");
-        const http = new XMLHttpRequest();
-        http.open("POST", url, true);
-        http.upload.addEventListener('progress', function() {
-            document.getElementById('btnAccion').textContent = 'Procesando';
-        });
-        http.send(new FormData(frm));
-        http.addEventListener('load', function() {
-            document.getElementById('btnAccion').textContent = 'Login';
-        });
-        http.onreadystatechange = function() {
-            if (this.readyState == 4) {
+    
+    // Frontend validation removed, backend handles this.
+    // Ensure inputs are clean before sending
+    correo.classList.remove("is-invalid");
+    clave.classList.remove("is-invalid");
 
-                const res = JSON.parse(this.responseText);
-                if (res.success) {
-                    let timerInterval;
-                    Swal.fire({
-                        title: "Bienvenido al Sistema",
-                        html: "Será Redireccionado en <b></b> milisegundos...",
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: () => {
-                            Swal.showLoading();
-                            timerInterval = setInterval(() => {
-                                const content = Swal.getHtmlContainer();
-                                if (content) {
-                                    const b = content.querySelector("b");
-                                    if (b) {
-                                        b.textContent = Swal.getTimerLeft();
-                                    }
+    const url = base_url + "usuarios/validar";
+    const frm = document.getElementById("frmLogin");
+    const http = new XMLHttpRequest();
+    http.open("POST", url, true);
+    http.upload.addEventListener('progress', function() {
+        document.getElementById('btnAccion').textContent = 'Procesando';
+    });
+    http.send(new FormData(frm));
+    http.addEventListener('load', function() {
+        document.getElementById('btnAccion').textContent = 'Login';
+    });
+    http.onreadystatechange = function() {
+        if (this.readyState == 4) {
+
+            const res = JSON.parse(this.responseText);
+            if (res.success) {
+                let timerInterval;
+                Swal.fire({
+                    title: "Bienvenido al Sistema",
+                    html: "Será Redireccionado en <b></b> milisegundos...",
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        timerInterval = setInterval(() => {
+                            const content = Swal.getHtmlContainer();
+                            if (content) {
+                                const b = content.querySelector("b");
+                                if (b) {
+                                    b.textContent = Swal.getTimerLeft();
                                 }
-                            }, 100);
-                        },
-                        willClose: () => {
-                            clearInterval(timerInterval);
-                        },
-                    }).then((result) => {
-                        if (result.dismiss === Swal.DismissReason.timer) {
-                            window.location = base_url + "administracion/home";
-                        }
-                    });
-                } else {
-                    document.getElementById('btnAccion').textContent = 'Login';
-                    document.getElementById("alerta").classList.remove("d-none");
-                    document.getElementById("alerta").innerHTML = res.msg;
-                }
+                            }
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    },
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location = base_url + "administracion/home";
+                    }
+                });
+            } else { // res.success is false
+                Swal.fire({
+                    icon: res.icono || 'error', // Use the icon from the backend, default to 'error'
+                    title: 'Aviso!',
+                    text: res.msg, // Use the message from the backend
+                });
+                document.getElementById('btnAccion').textContent = 'Login';
+                // Remove manual manipulation of the 'alerta' div as SweetAlert handles the message
+                document.getElementById("alerta").classList.add("d-none"); // Ensure it's hidden
             }
         }
     }
@@ -148,6 +149,11 @@ function frmRestablecer(e) {
                         window.location = base_url;
                     }, 3000);
                 }
+                Swal.fire({
+                    icon: res.icono,
+                    title: 'Aviso!',
+                    text: res.msg,
+                })
             }
         }
     }

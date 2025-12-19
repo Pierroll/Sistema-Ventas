@@ -6,6 +6,8 @@ export class ProductsPage extends BasePage {
     super(page);
     this.productTable = page.locator('#tblProductos');
     this.newProductButton = page.locator('button[onclick="frmProducto();"]');
+    // Selector para el campo de búsqueda de la tabla de productos
+    this.searchInput = page.locator('input[aria-controls="tblProductos"]');
 
     // Locators for the product modal (create/edit)
     this.modal = page.locator('#myModal');
@@ -24,12 +26,12 @@ export class ProductsPage extends BasePage {
   async goto() {
     await this.page.goto('productos/admin');
     await this.page.waitForLoadState('networkidle');
-    await this.page.waitForSelector('table', { timeout: 10000 });
+    await this.page.waitForSelector('#tblProductos', { timeout: 10000 });
   }
 
   async createProduct(code, description, purchasePrice, sellingPrice, unit, category) {
     await this.newProductButton.click();
-    await expect(this.modalTitle).toHaveText('Nuevo Producto');
+    await expect(this.modalTitle).toHaveText('NUEVO PRODUCTO');
 
     await this.codigoInput.fill(code);
     await this.descripcionInput.fill(description);
@@ -45,9 +47,20 @@ export class ProductsPage extends BasePage {
   }
 
   async editProduct(productCode) {
-    const productRow = this.productTable.locator('tbody tr').filter({ hasText: productCode });
+    // FIX: Usar el buscador para encontrar el producto y asegurar que la fila es visible
+    await this.searchInput.fill(productCode);
+    // Esperar a que la tabla se filtre y solo una fila (la del producto) sea visible
+    await expect(this.productTable.locator('tbody tr')).toHaveCount(1, { timeout: 5000 });
+
+    const productRow = this.productTable.locator('tbody tr').first(); // Ahora que solo hay una, podemos tomar la primera
     const editButton = productRow.locator('button[onclick*="btnEditarPro"]');
     
+    // Ahora que la fila es visible, el scroll y el clic deberían funcionar
+    await editButton.scrollIntoViewIfNeeded();
+
+    // DEBUG: Resaltar el botón antes de hacer clic para verificar el selector en el video
+    await editButton.highlight();
+
     await editButton.click();
     await expect(this.modalTitle).toHaveText('Actualizar Producto');
     await this.modal.waitFor({ state: 'visible' });
@@ -67,7 +80,11 @@ export class ProductsPage extends BasePage {
   }
 
   async getProductSellingPrice(productCode) {
-    const productRow = this.productTable.locator('tbody tr').filter({ hasText: productCode });
+    // Usar el buscador para asegurar que la fila es visible
+    await this.searchInput.fill(productCode);
+    await expect(this.productTable.locator('tbody tr')).toHaveCount(1, { timeout: 5000 });
+    
+    const productRow = this.productTable.locator('tbody tr').first();
     // Asumiendo que el precio de venta es la 5ta columna (índice 4 si contamos desde 0)
     // Código, Descripción, Precio Compra, Precio Venta, Stock, Medida, Categoría, Estado, Acciones
     // Columna 0     1             2             3          4      5       6          7       8

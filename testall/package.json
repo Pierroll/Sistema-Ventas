@@ -21,6 +21,8 @@
   "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.40.0",
-    "axios": "^1.13.2"
+    "axios": "^1.13.2",
+    "axios-cookiejar-support": "^6.0.5",
+    "tough-cookie": "^6.0.0"
   }
 }
